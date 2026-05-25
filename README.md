@@ -1,109 +1,214 @@
-# Bid Bazaar
+# BidBazaar (React + Node.js)
 
-Welcome to Bid Bazaar, an innovative online auction platform that brings the excitement of traditional auctions to the digital world. Our platform modernizes the auction process, offering a user-friendly, secure environment for buyers and sellers to engage in real-time bidding.
+Online auction platform with a **React** frontend and **Node.js** API backed by **PostgreSQL**.
 
-## Features
+## Requirements
 
-- **User Authentication**: Secure sign-up, login, and password management.
-- **Product Listing**: Easy-to-use tools for sellers to create detailed and attractive product listings with high-quality images and descriptions.
-- **Product Management**: Dashboard for sellers to manage their listings, track bids, and view sale history.
-- **Real-time Bidding**: Dynamic real-time bidding system with instant updates on bid status and auction progress.
-- **Custom Admin Dashboard**: Custom Admin Dashboard to manage the platform and view reports.
+- **Node.js 22+**
+- **PostgreSQL 18** running on port `5433`
+- Two terminal windows (or use `npm run dev` from root)
 
-## Technologies Used
+## Quick Start
 
-- **Backend**: Django (Python web framework)
-- **Database**: SQLite (default database for Django)
-- **Frontend**: HTML, JavaScript, Tailwind CSS, Chart.js for reports
-- **Development Tools**: Visual Studio Code
+**From project root (starts both):**
 
-## Installation
+```bash
+npm run dev
+```
 
-1. Clone the repository:
-    ```
-    git clone https://github.com/BlockbusterAndy/BidBazaar.git
-    ```
-2. Install the required dependencies:
-    ```
-    pip install -r requirements.txt
-    ```
-3. Apply database migrations:
-    ```
-    python manage.py migrate
-    ```
-4. Go to Commerce\settings.py and change email settings ( if using G-Mail setup app specific password ):
-    ```
-    #Change with your own email and password
-    EMAIL_HOST_USER = 'youremail'
-    EMAIL_HOST_PASSWORD = 'yourpassword'
-    ```
-    If using the default email provided please check the spam mails in your email inbox.
-5. Start the development server:
-    ```
-    python manage.py runserver
-    ```
+Or separately:
 
-## Output Screens
+```bash
+# Terminal 1 — Backend API
+cd backend
+npm run dev
 
- 1. Home Page
- ![Home Page](media/outputscreens/HomePage.png)
- 2. Login Page
- ![Login Page](media/outputscreens/login.png)
- 3. OTP Authentication
- ![OTP Page](media/outputscreens/OTP_Authentication.png)
- 4. Listing
- ![Listing](media/outputscreens/ItemListing.png)
- 5. User Profile
- ![Profile Page](media/outputscreens/UserProfile.png)
+# Terminal 2 — Frontend
+cd frontend
+npm run dev
+```
 
-## Admin Dashboard
+- API: `http://localhost:3001`
+- Website: `http://localhost:5173`
 
-1. Manage Listings
-![Listings Dashboard](media/outputscreens/managelisting.png)
-2. Reports
-![Reports Dashboard](media/outputscreens/reports.png)
+## Default Admin Credentials
 
-### Admin Credentials 
-username - admin, password - admin
+| Field | Value |
+|-------|-------|
+| Username | `admin` |
+| Password | `Admin@123` |
 
-## Future Enhancements
+## OTP / Registration
 
-While Bid Bazaar offers a robust auction platform with a range of features, there are several areas where we plan to implement enhancements in the future to further improve the user experience and expand the functionality. Some of the planned enhancements include:
+Email is optional. The OTP is always printed in the **backend terminal**:
 
-### 1. Search and Filtering Options
-   - **Objective**: add the search functionality to allow users to filter listings based on various criteria such as price range, category, location, and auction end time.
-   - **Benefits**: Improved discoverability of listings, making it easier for users to find relevant products of interest.
+```
+[OTP] username <email>: 123456
+```
 
-### 2. Auction Notifications and Alerts
-   - **Objective**: Implement real-time notifications and alerts for users to stay updated on bidding activity, outbid notices, auction ending reminders, and other relevant events.
-   - **Benefits**: Enhanced user engagement, encouraging active participation in auctions, and reducing the likelihood of missing out on preferred listings.
+Enter that code on the OTP verification page to complete registration.
 
-### 3. Integration with Payment Gateways
-   - **Objective**: Integrate popular payment gateways to facilitate secure and convenient payment processing for successful auction winners.
-   - **Benefits**: Streamlined payment workflows, increased trust and confidence among users, and broader support for various payment methods.
+## Troubleshooting
 
-### 4. Enhanced Analytics and Reporting
-   - **Objective**: Enhance the admin dashboard with advanced analytics and reporting tools to provide insights into bidding trends, user behavior, and listing performance.
-   - **Benefits**: Informed decision-making for sellers, actionable insights for platform optimization, and improved overall performance and competitiveness.
+| Problem | Fix |
+|--------|-----|
+| "Cannot reach the API server" | Start the backend first |
+| `Port 3001 is already in use` | Run `taskkill /F /IM node.exe` then start again |
+| "Failed to send email" on register | Ignore — check backend terminal for OTP code |
+| `npm install` SSL error | Run `npm config set strict-ssl false` |
+| Can't bid on listing | You cannot bid on your own listings. Login as `admin` to bid on all listings |
 
-These future enhancements align with our commitment to continuously improving Bid Bazaar and delivering a best-in-class auction experience for our users. Stay tuned for updates as we work on implementing these exciting new features!
+## Project Structure
 
+```
+BidBazaar1/
+├── backend/        # Node.js API (port 3001)
+│   ├── src/
+│   │   ├── handlers.js   # All API route handlers
+│   │   ├── db.js         # PostgreSQL connection + schema
+│   │   ├── middleware.js # JWT auth
+│   │   └── ...
+│   ├── seed.js     # Seed admin + listings
+│   └── .env
+├── frontend/       # React + Vite (port 5173)
+│   └── src/
+│       ├── pages/
+│       ├── components/
+│       └── api/client.js
+└── media/
+```
 
-## Contributing
+## Tech Stack
 
-We welcome contributions to Bid Bazaar! To contribute, follow these steps:
+- **Frontend:** React 18, Vite, Tailwind (CDN)
+- **Backend:** Node.js 22, native HTTP, JWT auth
+- **Database:** PostgreSQL 18
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Commit your changes and push to the branch.
-4. Submit a pull request.
+---
 
-## License
+## Postman API Reference
 
-This project is licensed under the [MIT License](LICENSE).
+**Base URL:** `http://localhost:3001/api`
 
-## Acknowledgments
+### Step 1 — Get a Token (Login)
 
-- Django Project for the excellent documentation and resources.
-- Tailwind CSS for providing a powerful and flexible CSS framework.
-- All the open-source libraries and tools used in this project.
+```
+POST http://localhost:3001/api/auth/login/
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin@123"
+}
+```
+
+Copy the `token` from the response. Add it to all protected requests as:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+### Auth Endpoints
+
+| Method | Full URL | Auth | Body |
+|--------|----------|------|------|
+| POST | `http://localhost:3001/api/auth/login/` | No | `{ "username": "", "password": "" }` |
+| POST | `http://localhost:3001/api/auth/logout/` | No | — |
+| POST | `http://localhost:3001/api/auth/register/` | No | `{ "username": "", "email": "", "password": "", "confirmation": "" }` |
+| POST | `http://localhost:3001/api/auth/otp-verify/` | No | `{ "otp": "123456" }` |
+| POST | `http://localhost:3001/api/auth/forgot-password/` | No | `{ "username": "", "email": "" }` |
+| POST | `http://localhost:3001/api/auth/password-otp/` | No | `{ "otp": "123456" }` |
+| GET  | `http://localhost:3001/api/auth/me/` | Yes | — |
+
+---
+
+### Listings
+
+| Method | Full URL | Auth | Body / Notes |
+|--------|----------|------|------|
+| GET | `http://localhost:3001/api/listings/` | No | All active listings |
+| GET | `http://localhost:3001/api/listings/1/` | No | Single listing by ID |
+| GET | `http://localhost:3001/api/listings/mine/` | Yes | Your own listings |
+| GET | `http://localhost:3001/api/listings/won/` | Yes | Auctions you won |
+| GET | `http://localhost:3001/api/listings/watch/` | Yes | Your watchlist |
+| POST | `http://localhost:3001/api/listings/create/` | Yes | `form-data: title, category, description, starting_value, image(file)` |
+| POST | `http://localhost:3001/api/listings/1/bid/` | Yes | `{ "value": 15000 }` |
+| POST | `http://localhost:3001/api/listings/1/watch/` | Yes | Toggle watchlist |
+| POST | `http://localhost:3001/api/listings/1/close/` | Yes | Owner only — closes auction |
+| POST | `http://localhost:3001/api/listings/1/comments/` | Yes | `{ "comment": "Nice item!" }` |
+
+---
+
+### Categories
+
+| Method | Full URL | Auth | Notes |
+|--------|----------|------|-------|
+| GET | `http://localhost:3001/api/categories/` | No | List all categories |
+| GET | `http://localhost:3001/api/categories/Trading Cards/` | No | Listings in a category |
+
+---
+
+### Profile
+
+| Method | Full URL | Auth | Body |
+|--------|----------|------|------|
+| GET | `http://localhost:3001/api/profile/` | Yes | Get your profile |
+| PUT | `http://localhost:3001/api/profile/` | Yes | `form-data: first_name, last_name, email, address, profile_picture(file)` |
+| POST | `http://localhost:3001/api/profile/password/` | Yes | `{ "original_password": "", "new_password": "", "confirm_password": "" }` |
+
+---
+
+### Admin (requires admin token)
+
+| Method | Full URL | Auth | Notes |
+|--------|----------|------|-------|
+| GET | `http://localhost:3001/api/admin/dashboard/` | Admin | Stats overview |
+| GET | `http://localhost:3001/api/admin/users/` | Admin | All users |
+| POST | `http://localhost:3001/api/admin/users/7/toggle-staff/` | Admin | Add/remove staff role |
+| POST | `http://localhost:3001/api/admin/users/7/toggle-admin/` | Admin | Add/remove admin role |
+| POST | `http://localhost:3001/api/admin/users/7/delete/` | Admin | Delete user + all their data |
+| GET | `http://localhost:3001/api/admin/listings/` | Admin | All listings (add `?q=search` to filter) |
+| POST | `http://localhost:3001/api/admin/listings/1/deactivate/` | Admin | Deactivate a listing |
+| POST | `http://localhost:3001/api/admin/listings/1/delete/` | Admin | Delete a listing |
+| GET | `http://localhost:3001/api/admin/reports/` | Admin | Full analytics report |
+
+---
+
+### Postman Quick Setup
+
+1. Create a new **Collection** called `BidBazaar`
+2. Add a **Collection Variable** called `token`
+3. On the Login request → **Tests** tab, add:
+   ```js
+   pm.collectionVariables.set("token", pm.response.json().token);
+   ```
+4. On all protected requests set header:
+   ```
+   Authorization: Bearer {{token}}
+   ```
+
+---
+
+## URL Structure
+
+| Page | URL |
+|------|-----|
+| Home | `/` |
+| Browse Categories | `/auctions/browse-categories` |
+| Category Listings | `/auctions/browse-categories/Trading Cards` |
+| Listing Detail | `/auctions/listing-detail/1` |
+| Create Listing | `/auctions/create-new-listing` |
+| My Listings | `/dashboard/my-active-listings` |
+| Won Auctions | `/dashboard/my-won-auctions` |
+| Watchlist | `/dashboard/my-watchlist` |
+| Profile | `/account/my-profile` |
+| Login | `/account/login` |
+| Register | `/account/register` |
+| Admin Dashboard | `/admin/control-panel/dashboard` |
+| Manage Users | `/admin/control-panel/manage-users` |
+| Manage Listings | `/admin/control-panel/manage-listings` |
+| Reports | `/admin/control-panel/reports-analytics` |
+| How It Works | `/how-it-works` |
+| About | `/about-bidbazaar` |

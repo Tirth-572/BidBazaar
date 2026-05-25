@@ -1,0 +1,20 @@
+{
+  "name": "bidbazaar-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "node --no-warnings=ExperimentalWarning --env-file=.env --watch src/index.js",
+    "start": "node --no-warnings=ExperimentalWarning --env-file=.env src/index.js"
+  },
+  "dependencies": {
+    "nodemailer": "^8.0.7",
+    "pg": "^8.21.0"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^12.10.0"
+  }
+}
